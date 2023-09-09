@@ -10,7 +10,7 @@
   }
 
 .fade-in-description {
-    font-family: 'Times New Roman', Times, serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: 60px;
     text-align: center;
     animation: fadeIn 6s;
