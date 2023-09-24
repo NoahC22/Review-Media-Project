@@ -1,7 +1,16 @@
 const express = require('express');
 const { name } = require('ejs');
+const { MongoClient, ObjectId } = require('mongodb');
 
 const PORT = 8080;
+
+const uri = "mongodb+srv://NoahC22:celrtnve22!C@cluster0.86340go.mongodb.net/"
+const client = new MongoClient(uri);
+
+(async function ()
+{
+        await client.connect();
+})();
 
 const app = express();
 app.use(express.static('static'));
@@ -13,6 +22,7 @@ app.get('/', async (req, res) => {
 })
 
 app.get('/home', async (req,res) => {
+    await client.db("Review_Media").collection("Reviews").insertOne({ Message: "It works"})
     res.render('homepage')
 })
 
