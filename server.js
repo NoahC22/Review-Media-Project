@@ -29,31 +29,78 @@ app.get('/', async (req, res) => {
 })
 
 app.get('/home', async (req,res) => {
-    res.render('homepage')
+    let x = req.session.user
+
+    if(x == undefined) {
+        res.render('homepage')
+    } else {
+        res.render('homepage')
+    }
 })
 
 app.get('/list', async (req, res) => {
-    res.render('list_of_reviews')
+    let x = req.session.user
+
+    if(x == undefined) {
+        res.redirect('/home')
+    } else {
+        res.render('list_of_reviews')
+    }
 })
 
 app.get('/login', async (req, res) => {
-    res.render('login')
+    let x = req.session.user;
+	if(x == undefined) {
+		res.render('login')
+	}
+	else {
+		res.redirect('/home')
+	}
 })
 
 app.get('/signup', async (req, res) => {
-    res.render('signup')
+    let x = req.session.user;
+	if(x == undefined) {
+		res.render('signup')
+	}
+	else {
+		res.redirect('/home')
+	}
 })
 
+app.get('/logout', (req,res) => {
+	delete req.session.user;
+    res.redirect('/home');
+});
+
 app.get('/user', async (req, res) => {
-    res.render('user')
+    let x = req.session.user
+
+    if(x == undefined) {
+        res.redirect('/home')
+    } else {
+        res.render('user')
+    }
 })
 
 app.get('/review', async (req, res) => {
-    res.render('review_page')
+    let x = req.session.user
+
+    if(x == undefined) {
+        res.redirect('/home')
+    } else {
+        res.render('review_page')
+    }
 })
 
 app.get('/add', async (req, res) => {
-    res.render('add_review')
+    let x = req.session.user
+
+    if (x == undefined) {
+        res.redirect('/home')
+    } else {
+        res.render('add_review')
+    }
 })
 
 app.all('*', async (req, res) => {
