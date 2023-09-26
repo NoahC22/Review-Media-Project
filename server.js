@@ -1,6 +1,10 @@
 const express = require('express');
 const { name } = require('ejs');
 const { MongoClient, ObjectId } = require('mongodb');
+const bcrypt = require('bcryptjs');
+const path = require('path');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
 
 const PORT = 8080;
 
@@ -16,13 +20,15 @@ const app = express();
 app.use(express.static('static'));
 app.use(express.urlencoded({extended: false}));
 app.set('view engine', 'ejs');
+app.use(cookieParser());
+app.use(session({secret: 'superSecret', resave: false, saveUninitialized: false}));
+app.use(express.static(path.join(__dirname, 'static')));
 
 app.get('/', async (req, res) => {
     res.redirect('/home')
 })
 
 app.get('/home', async (req,res) => {
-    await client.db("Review_Media").collection("Reviews").insertOne({ Message: "It works"})
     res.render('homepage')
 })
 
