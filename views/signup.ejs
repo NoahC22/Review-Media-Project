@@ -15,22 +15,34 @@
         
                     <div class="mb-md-1 mt-md-1 pb-1">
         
+                      <form method="POST" action="/signupform">
                       <h2 class="fw-bold mb-2 text-uppercase">Sign Up</h2>
                       <p class="text-white-50 mb-5">Enter New Credentials</p>
         
                       <div class="form-outline form-white mb-4">
-                        <input type="signusername" id="signuser" placeholder="Create Username" class="form-control form-control-lg" />
+                        <input name="signupusername" value="<%= locals.username %>" type="signusername" id="signuser" placeholder="Create Username" class="form-control form-control-lg" />
                       </div>
         
                       <div class="form-outline form-white mb-4">
-                        <input type="signpassword" id="signpass" placeholder="Create Password" class="form-control form-control-lg" />
+                        <input name="signuppassword" type="signpassword" id="signpass" placeholder="Create Password" class="form-control form-control-lg" />
                       </div>
 
                       <div class="form-outline form-white mb-4">
-                        <input type="confpassword" id="confpass" placeholder="Confirm Password" class="form-control form-control-lg" />
+                        <input name="signuppasswordconfirm" type="confpassword" id="confpass" placeholder="Confirm Password" class="form-control form-control-lg" />
                       </div>
+
+                      <% if (locals.errors) { %>
+                        <div class="alert alert-danger" role="alert">
+                          <ul>
+                            <% for (let error of errors) { %>
+                            <li><%= error %></li>
+                            <% } %>
+                          </ul>
+                        </div>
+                      <% } %>
                 
                       <button class="btn btn-outline-light btn-lg px-2" type="submit">Sign Up</button>
+                      </form>
         
                     </div>
         

@@ -68,6 +68,55 @@ app.get('/signup', async (req, res) => {
 	}
 })
 
+app.post('/signupform', async (req, res) => {
+
+    let new_user = req.body.signupusername;
+    let new_pass = req.body.signuppassword;
+    let new_passconfirm = req.body.signuppasswordconfirm
+    let success = true;
+    let listoferrors = [];
+
+    let test1 = await client.db("Review_Media").collection("Users").findOne({ username: `${new_user.toLowerCase()}`});
+
+    if(test1 != null) {
+        success = false;
+        listoferrors.push("Account already exists.")
+    }
+
+    if((/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/).test(new_pass) == false) {
+        success = false;
+        listoferrors.push("Password must contain 1 special character, 1 number, and the length has to be between 6 to 16 characters.")
+    }
+
+    if(new_pass != new_passconfirm) {
+        success = false;
+        listoferrors.push("Passwords don't match, couldn't confirm.")
+    }
+
+    if (success == true) {
+
+        let hash = await bcrypt.hash(new_pass, 10);
+
+        let new_u = {
+            username: new_user.toLowerCase(),
+            password: hash,
+        }
+
+        await client.db("Review_Media").collection("Users").insertOne(new_u)
+
+        let au = await client.db("Review_Media").collection("Users").findOne({ username: `${new_user.toLowerCase()}`})
+        req.session.user = au;
+
+        res.redirect('/home')
+    } else {
+        res.render('signup', {
+            username: new_user,
+			errors: listoferrors
+        })
+    }
+
+})
+
 app.get('/logout', (req,res) => {
 	delete req.session.user;
     res.redirect('/home');
