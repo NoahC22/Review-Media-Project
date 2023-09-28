@@ -15,19 +15,26 @@
 
                     <div class="mb-md-1 mt-md-1 pb-1">
 
-        
+                      <form method="POST" action="/loginform">
                       <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
                       <p class="text-white-50 mb-5">Enter Existing Credentials</p>
         
                       <div class="form-outline form-white mb-4">
-                        <input type="logusername" id="loguser" placeholder="Enter Username" class="form-control form-control-lg" />
+                        <input value="<%= locals.username %>" name="loginusername" type="logusername" id="loguser" placeholder="Enter Username" class="form-control form-control-lg" />
                       </div>
         
                       <div class="form-outline form-white mb-4">
-                        <input type="logpassword" id="logpass" placeholder="Enter Password" class="form-control form-control-lg" />
+                        <input name="loginpassword" type="logpassword" id="logpass" placeholder="Enter Password" class="form-control form-control-lg" />
                       </div>
+
+                      <% if (locals.failed) { %>
+                        <div class="alert alert-danger" role="alert">
+                          Wrong information
+                        </div>
+                      <% } %>
                 
                       <button class="btn btn-outline-light btn-lg px-2" type="submit">Login</button>
+                      </form>
         
                     </div>
         

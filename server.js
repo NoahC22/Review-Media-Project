@@ -58,6 +58,41 @@ app.get('/login', async (req, res) => {
 	}
 })
 
+app.post('/loginform', async (req, res) => {
+
+    let loginu = req.body.loginusername;
+	let loginp = req.body.loginpassword;
+    let get_in = true;
+
+    if(loginu == "") {
+        get_in = false;
+    }
+
+    const info = await client.db("Review_Media").collection("Users").findOne({ username: `${loginu.toLowerCase()}`})
+    if(info == null) {
+        get_in = false
+    }
+
+    if(get_in == true) {
+        let compare = await bcrypt.compare(loginp, info.password);
+
+        if(compare == true) {
+            const lguser = await client.db("Review_Media").collection("Users").findOne({ username: `${loginu.toLowerCase()}`})
+            req.session.user = lguser
+            res.redirect('/home')
+        } else {
+            res.render('login', {
+                username: loginu,
+			    failed: "Wrong!"
+            })
+        }
+    } else {
+        res.render('login', {
+            failed: "Wrong!"
+        })
+    }
+})
+
 app.get('/signup', async (req, res) => {
     let x = req.session.user;
 	if(x == undefined) {
@@ -75,6 +110,11 @@ app.post('/signupform', async (req, res) => {
     let new_passconfirm = req.body.signuppasswordconfirm
     let success = true;
     let listoferrors = [];
+
+    if(new_user.length < 6) {
+        success = false;
+        listoferrors.push("Username needs to be 6 or more characters.")
+    }
 
     let test1 = await client.db("Review_Media").collection("Users").findOne({ username: `${new_user.toLowerCase()}`});
 
