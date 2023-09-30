@@ -1,10 +1,21 @@
 const express = require('express');
 const { name } = require('ejs');
+const fs = require('fs')
 const { MongoClient, ObjectId } = require('mongodb');
 const bcrypt = require('bcryptjs');
 const path = require('path');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const multer = require("multer");
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, './uploads')
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname)
+    }
+})
+const upload = multer({ storage: storage })
 
 const PORT = 8080;
 
@@ -23,6 +34,8 @@ app.set('view engine', 'ejs');
 app.use(cookieParser());
 app.use(session({secret: 'superSecret', resave: false, saveUninitialized: false}));
 app.use(express.static(path.join(__dirname, 'static')));
+app.use(express.static(__dirname + '/public'));
+app.use('/uploads', express.static('uploads'));
 
 app.get('/', async (req, res) => {
     res.redirect('/home')
@@ -162,13 +175,43 @@ app.get('/logout', (req,res) => {
     res.redirect('/home');
 });
 
-app.get('/user', async (req, res) => {
-    let x = req.session.user
+app.get('/user/:name', async (req, res) => {
+    let x = req.session.user;
+	if(x == undefined) {
+		res.redirect('/home')
+	}
+	else {
+        const usern = req.params["name"];
+        const info = await client.db("Review_Media").collection("Users").findOne({ username: usern.toLowerCase()})
+        let ifuser = false;
+        if(info.username == req.session.user.username) {
+            ifuser = true;
+        }
+		res.render('user', {
+			userinfo: info,
+            ifu: ifuser,
+		})
+	}
+})
 
-    if(x == undefined) {
-        res.redirect('/home')
+app.post('/userform', upload.single("pfp"), async (req, res) => {
+
+    let pass = true;
+    if(req.file == undefined) {
+        pass = false;
+    }
+    if(pass == true) {
+
+        const bufferi = fs.readFileSync(req.file.path)
+        let i = bufferi.toString('base64')
+        let i2 = `data:${req.file.mimetype};base64,${i}`
+
+        let ch = { username: req.session.user.username.toLowerCase()}
+        let new_val = { $set: {imgpath: i2 }}
+        await client.db("Review_Media").collection("Users").updateOne(ch, new_val)
+        res.redirect(`/user/${req.session.user.username}`)
     } else {
-        res.render('user')
+        res.redirect(`/user/${req.session.user.username}`) 
     }
 })
 

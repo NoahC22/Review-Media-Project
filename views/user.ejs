@@ -10,18 +10,25 @@
             </div>
 
             <div class="container-fluid" style="width: 750px;">
+                <% if(ifu) { %>
+                <form method="POST" action="/userform" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="formFile" class="form-label">Upload Profile Picture</label>
-                    <input class="form-control" type="file" id="formFile">
+                    <input class="form-control" type="file" id="formFile" accept="image/jpeg, image/png, image/jpg" name="pfp">
                     <div class="text-center">
                         <button type="submit" class="btn btn-secondary">Upload</button>
                     </div>
                 </div>
+                </form>
+                <% } %>
 
+                <% if(userinfo.imgpath == null) { %>
                 <img src="https://jesussavesmbchurch.org/wp-content/themes/grace-church/images/generic-profile.jpg" class="mx-auto d-block">
-                <img src="https://jesussavesmbchurch.org/wp-content/themes/grace-church/images/generic-profile.jpg" class="d-block w-25 h-25 m-auto">
+                <% } else { %>
+                <img src="<%= userinfo.imgpath %>" class="d-block w-25 h-25 m-auto">
+                <% } %>
 
-                <div class="text-center"><p>NoahC</p></div>
+                <div class="text-center"><p><%= userinfo.username %></p></div>
             </div>
 
             <div class="text-center">
