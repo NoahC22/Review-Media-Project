@@ -231,7 +231,60 @@ app.get('/add', async (req, res) => {
     if (x == undefined) {
         res.redirect('/home')
     } else {
-        res.render('add_review')
+        res.render('add_review', {
+            user: x
+        })
+    }
+})
+
+app.post('/addform', upload.single('rimg'), async (req, res) => {
+
+    let x = req.session.user;
+    const adderrors = []
+    let addin = true;
+    let rtitle = String(req.body.reviewname)
+    let rdescription = String(req.body.reviewdescription)
+    let rrating = String(req.body.reviewrating)
+    let rmedia = String(req.body.mediatype)
+
+    if(rmedia.length != 1) {
+        addin = false;
+        adderrors.push("Change Media Type.")
+    }
+
+    if(req.file == undefined) {
+        addin = false;
+        adderrors.push("Submit 1 image file.")
+    }
+
+    if(rtitle == "" || rdescription == "" || rrating == "") {
+        adderrors.push("Don't leave a section blank.")
+        addin = false;
+    }
+
+    if(addin == false) {
+        res.render('add_review', {
+            errors: adderrors,
+            rname: rtitle,
+            rdesc: rdescription,
+            user: x
+        })
+    } else {
+
+        const buffer1 = fs.readFileSync(req.file.path)
+        let i1 = buffer1.toString('base64')
+        let im1 = `data:${req.file.mimetype};base64,${i1}`
+
+        let newi = {
+            username: req.session.user.username,
+            review_title: rtitle,
+            review_description: rdescription,
+            review_rating: rrating,
+            img1: im1,
+        }
+    
+        await client.db("Review_Media").collection("Reviews").insertOne(newi);
+        res.redirect(`/list`)
     }
 })
 

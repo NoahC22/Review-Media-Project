@@ -9,9 +9,19 @@
             </div>
         </div>
 
+        <form method="POST" action="/addform" enctype="multipart/form-data">
+            <% if (locals.errors) { %>
+                <div class="alert alert-danger" role="alert">
+                  <ul>
+                    <% for (let error of errors) { %>
+                      <li><%= error %></li>
+                    <% } %>
+                  </ul>
+                </div>
+              <% } %>
         <div class="container-fluid" style="width: 750px;">
             <label>Select Type of Media</label>
-            <select class="form-select" aria-label="Default select example">
+            <select name="mediatype" class="form-select" aria-label="Default select example">
                 <option selected>Choose One</option>
                 <option value="1">Book</option>
                 <option value="2">Game</option>
@@ -22,36 +32,37 @@
 
             <div class="form-group">
                 <label for="exampleFormControlInput1">Name of Review</label>
-                <input type="email" class="form-control" id="exampleFormControlInput1">
+                <input class="form-control" id="exampleFormControlInput1" value="<%= locals.rname %>" name="reviewname">
             </div>
 
             <br>
 
             <div class="form-group">
                 <label for="exampleFormControlTextarea1">Create Review</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="reviewdescription"><%= locals.rdesc %></textarea>
             </div>
 
             <br>
 
             <label for="customRange2" class="form-label">Rate 1-10</label>
-            <input min="1" max="10" step="0.5" type="number" class="form-control"/>
+            <input min="1" max="10" step="0.5" type="number" name="reviewrating" class="form-control"/>
 
             <br>
 
             <div class="custom-file">
                 <label>Input Picture for Review</label>
                 <br>
-                <input type="file" class="custom-file-input" id="inputGroupFile04" accept="image/jpeg, image/png, image/jpg">
+                <input type="file" class="custom-file-input" id="inputGroupFile04" accept="image/jpeg, image/png, image/jpg" name="rimg">
             </div>
 
             <br>
 
             <div class="text-center">
-                <button type="button" class="btn btn-secondary">Submit</button>
+                <button type="submit" class="btn btn-secondary">Submit</button>
             </div>
 
         </div>
+        </form>
 
     </body>
 </html>
