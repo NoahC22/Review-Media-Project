@@ -27,33 +27,40 @@
                 </div>
             </div>
 
+            <% for(let r of rvs) { %>
             <div class="row">
                 <div class="col-3">
-                    <img class="d-block w-50 h-100" src="https://m.media-amazon.com/images/I/71MEh-s3p7L._AC_SL1500_.jpg">
+                    <img class="d-block w-50 h-100" src="<%= r.img1 %>">
                 </div>
 
                 <div class="col-3">
-                    Movie
+                    <%= r.review_type %>
                 </div>
 
                 <div class="col-3">
-                    <a href="/review">Back To The Future</a>
+                    <a href="/review"><%= r.review_title %></a>
                 </div>
 
                 <div class="col-3">
-                    10
+                    <%= r.review_rating %>
                 </div>
 
+                <% if(showuser) { %>
                 <div class="pb-2 mt-4 mb-2">
-                    <button type="button" class="btn btn-secondary">Delete</button>
+                    <a href="/delete/<%= r._id %>" class="button"><button type="button" class="btn btn-secondary">Delete</button></a>
                 </div>
+                <% } %>
             </div>
 
             <br>
 
+            <% } %>
+
+            <% if(showuser) { %>
             <div class="pb-2 mt-4 mb-2">
                 <a href="/add"><button type="button" class="btn btn-secondary">Add New Review</button></a>
             </div>
+            <% } %>
         </div>
 
 

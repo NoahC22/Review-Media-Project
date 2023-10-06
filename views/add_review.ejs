@@ -5,7 +5,7 @@
     <body>
         <div class="container-fluid">
             <div class="pb-2 mt-4 mb-3">
-                <a href="/list"><button type="button" class="btn btn-secondary">Back</button></a>
+                <a href="/list/<%= user.username %>"><button type="button" class="btn btn-secondary">Back</button></a>
             </div>
         </div>
 
@@ -23,9 +23,9 @@
             <label>Select Type of Media</label>
             <select name="mediatype" class="form-select" aria-label="Default select example">
                 <option selected>Choose One</option>
-                <option value="1">Book</option>
-                <option value="2">Game</option>
-                <option value="3">Movie</option>
+                <option value="Book">Book</option>
+                <option value="Game">Game</option>
+                <option value="Movie">Movie</option>
             </select>
 
             <br>

@@ -51,13 +51,39 @@ app.get('/home', async (req,res) => {
     }
 })
 
-app.get('/list', async (req, res) => {
-    let x = req.session.user
+app.get('/list/:user', async (req, res) => {
 
-    if(x == undefined) {
+    let x = req.session.user;
+	if(x == undefined) {
+		res.redirect('/home')
+	}
+	else {
+        const uname = req.params["user"].toLowerCase();
+        const result = await client.db("Review_Media").collection("Reviews").find({ username: uname}).toArray();
+        let suser = false;
+        if(req.session.user.username == uname) {
+            suser = true;
+        }
+        res.render('list_of_reviews', {
+            rvs: result,
+            showuser: suser
+        })
+    }
+})
+
+app.get('/delete/:id', async (req, res) => {
+    let x = req.session.user;
+    if (x == undefined) {
         res.redirect('/home')
     } else {
-        res.render('list_of_reviews')
+        const rid = req.params["id"];
+        const cinfo = await client.db("Review_Media").collection("Reviews").findOne({ _id: new ObjectId(rid)})
+        if(cinfo.username == req.session.user.username) {
+            await client.db("Review_Media").collection("Reviews").deleteOne({ _id: new ObjectId(rid)})
+            res.redirect(`/list/${req.session.user.username}`)
+        } else {
+            res.redirect('/home')
+        }
     }
 })
 
@@ -246,8 +272,8 @@ app.post('/addform', upload.single('rimg'), async (req, res) => {
     let rdescription = String(req.body.reviewdescription)
     let rrating = String(req.body.reviewrating)
     let rmedia = String(req.body.mediatype)
-
-    if(rmedia.length != 1) {
+    console.log(rmedia)
+    if(rmedia.length > 6) {
         addin = false;
         adderrors.push("Change Media Type.")
     }
@@ -280,11 +306,12 @@ app.post('/addform', upload.single('rimg'), async (req, res) => {
             review_title: rtitle,
             review_description: rdescription,
             review_rating: rrating,
+            review_type: rmedia,
             img1: im1,
         }
     
         await client.db("Review_Media").collection("Reviews").insertOne(newi);
-        res.redirect(`/list`)
+        res.redirect(`/list/${req.session.user.username}`)
     }
 })
 
