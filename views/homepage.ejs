@@ -11,57 +11,105 @@
 
             <div class="container-fluid">
                 <div class="row">
+                    <% if(locals.user) { %>
                     <div class="col-2">
-                        <input class="form-control">
+                        <input class="form-control" id="searchBar">
                     </div>
+                    <% } %>
 
                     <div class="col-8 container-fluid">
                         <div class="row" style="text-align: center;">
+                            <% if(locals.user) { %>
                             <div class="col-2">
-                                <a href="/list">List of Reviews</a>
+                                <a href="/list/<%= user.username %>">List of Reviews</a>
                             </div>
                             <div class="col-2">
-                                <a href="/user">User Page</a>
+                                <a href="/user/<%= user.username %>">User Page</a>
                             </div>
                             <div class="col-2">
                                 <a href="/logout">Log Out</a>
                             </div>
+                            <% } else { %>
                             <div class="col-2">
                                 <a href="/signup">Sign Up</a>
                             </div>
                             <div class="col-2">
                                 <a href="/login">Sign In</a>
                             </div>
+                            <% } %>
                         </div>
                     </div>
                 </div>
             </div>
         </header>
 
+        <% if(locals.user) { %>
+        <% } else { %>
         <div class="fade-in-title">
             <p style="color: darkblue;">Review Blog</p>
         </div>
-
         <div class="fade-in-description">
             <p style="color: darkblue;">Ever wanted to see and post your reviews easily? This is what Review Blog does and gives you an easy experience in both objectives.</p>
         </div>
+        <% } %>
+
 
         <div class="container-fluid mt-2">
             <div class="row align-items-center" id="alist">
+                <% if(locals.user) { %>
+                <% for (let r of reviews) { %>
                     <div class="col-4">
                         <div class="card container-fluid">
-                            <img src="https://m.media-amazon.com/images/I/71MEh-s3p7L._AC_SL1500_.jpg" class="card-img-top embed-responsive-item mx-auto d-block d-block w-50 h-100" style="width: 100%; height: 25vw; object-fit: cover;">
+                            <img src="<%= r.img1 %>" class="card-img-top embed-responsive-item mx-auto d-block d-block w-50 h-100" style="width: 100%; height: 25vw; object-fit: cover;">
                                 <div class="card-body">
-                                    <h5 class="card-title">Back To The Future Review</h5>
-                                    <p class="card-text">Movie</p>
-                                    <p class="card-text">By: NoahC</p>
-                                    <p class="card-text">10/10</p>
+                                    <h5 class="card-title"><%= r.review_title %></h5>
+                                    <p class="card-text"><%= r.review_type %></p>
+                                    <p class="card-text">By: <%= r.username %></p>
+                                    <p class="card-text"><%= r.review_rating %>/10</p>
                                     <a href="/review" class="btn btn-secondary">Select</a>
                                 </div>
                         </div>
                     </div>
+                <% } %>
+                <% } %>
             </div>
         </div>
+        <script>
+            ( async () => {
+                let list = document.getElementById('alist')
+                let clear = () => {
+                    list.innerHTML = ""
+                }
+                document.getElementById('searchBar').addEventListener('input', async (e) => {
+                    let result = await fetch('/home_search', {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            search: document.getElementById('searchBar').value
+                        })
+                    })
+                    data = await result.json();
+                    clear()
+                    for (let rev of data) {
+                        console.log("Is it matching")
+                        list.innerHTML += `<div class="col-4">
+                        <div class="card container-fluid">
+                            <img src="${rev.img1}" class="card-img-top embed-responsive-item mx-auto d-block d-block w-50 h-100" style="width: 100%; height: 25vw; object-fit: cover;">
+                                <div class="card-body">
+                                    <h5 class="card-title">${rev.review_title}</h5>
+                                    <p class="card-text">${rev.review_type}</p>
+                                    <p class="card-text">By: ${rev.username}</p>
+                                    <p class="card-text">${rev.review_rating}/10</p>
+                                    <a href="/review" class="btn btn-secondary">Select</a>
+                                </div>
+                        </div>
+                    </div>`
+                    }
+                })
+            })()
+        </script>
 
     </body>
 

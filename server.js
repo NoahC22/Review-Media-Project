@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const path = require('path');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser')
 const multer = require("multer");
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -32,6 +33,8 @@ app.use(express.static('static'));
 app.use(express.urlencoded({extended: false}));
 app.set('view engine', 'ejs');
 app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 app.use(session({secret: 'superSecret', resave: false, saveUninitialized: false}));
 app.use(express.static(path.join(__dirname, 'static')));
 app.use(express.static(__dirname + '/public'));
@@ -47,8 +50,22 @@ app.get('/home', async (req,res) => {
     if(x == undefined) {
         res.render('homepage')
     } else {
-        res.render('homepage')
+        let submissions = await client.db("Review_Media").collection("Reviews").find({}).toArray();
+        submissions = submissions.reverse()
+        res.render('homepage', {
+            user: x,
+            reviews: submissions
+        })
     }
+})
+
+app.post('/home_search', async (req, res) => {
+    let x = req.body.search
+    //console.log(x)
+    //x = x.toLowerCase()
+    let info = await client.db("Review_Media").collection("Reviews").find({ review_title: {$regex: x}}).toArray();
+    info = info.reverse()
+    res.json(info)
 })
 
 app.get('/list/:user', async (req, res) => {
