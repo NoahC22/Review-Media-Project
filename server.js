@@ -258,13 +258,17 @@ app.post('/userform', upload.single("pfp"), async (req, res) => {
     }
 })
 
-app.get('/review', async (req, res) => {
+app.get('/review/:ind', async (req, res) => {
     let x = req.session.user
 
     if(x == undefined) {
         res.redirect('/home')
     } else {
-        res.render('review_page')
+        const ind = req.params['ind']
+        const result = await client.db("Review_Media").collection("Reviews").findOne({ _id: new ObjectId(ind)})
+        res.render('review_page', {
+            review: result,
+        })
     }
 })
 

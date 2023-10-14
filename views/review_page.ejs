@@ -10,18 +10,18 @@
 
             <div class="row">
               <div class="col-4">
-                <img class="d-block w-50 h-100" src="https://m.media-amazon.com/images/I/71MEh-s3p7L._AC_SL1500_.jpg">
+                <img class="d-block w-50 h-100" src="<%= review.img1 %>">
               </div>
             
               <div class="col-4" style="white-space: normal; word-wrap: break-word;">
-                    <h5>The Greatest Movie Ever</h5>
-                    <a href="/user"><h5>By: NoahC</h5></a>
-                    <p>This movie is the best.</p>
+                    <h5><%= review.review_title %></h5>
+                    <a href="/user/<%= review.username %>"><h5>By: <%= review.username %></h5></a>
+                    <p><%= review.review_description %></p>
               </div>
 
               <div class="col-4">
-                <h6>Media: Movie</h6>
-                <h6>Rating: 10/10</h6>
+                <h6>Media: <%= review.review_type %></h6>
+                <h6>Rating: <%= review.review_rating %></h6>
               </div>
             </div>
 

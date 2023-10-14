@@ -66,7 +66,7 @@
                                     <p class="card-text"><%= r.review_type %></p>
                                     <p class="card-text">By: <%= r.username %></p>
                                     <p class="card-text"><%= r.review_rating %>/10</p>
-                                    <a href="/review" class="btn btn-secondary">Select</a>
+                                    <a href="/review/<%= r._id %>" class="btn btn-secondary">Select</a>
                                 </div>
                         </div>
                     </div>
@@ -102,7 +102,7 @@
                                     <p class="card-text">${rev.review_type}</p>
                                     <p class="card-text">By: ${rev.username}</p>
                                     <p class="card-text">${rev.review_rating}/10</p>
-                                    <a href="/review" class="btn btn-secondary">Select</a>
+                                    <a href="/review/${rev._id}" class="btn btn-secondary">Select</a>
                                 </div>
                         </div>
                     </div>`
